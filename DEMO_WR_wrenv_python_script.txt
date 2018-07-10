@@ -1,0 +1,30 @@
+On Sat, Apr 24, 2010 at 08:22:14AM +0530, Kushal Kumaran wrote:
+
+[snip]
+Run a shell (cmd.exe, I think) using subprocess and send it the
+commands you want to run using the communicate() method.
+Actually, I ended up using stdin.write('...\n'), and it works as expected:
+
+#
+# Set WindRiver environment for VxWorks 6.4
+#
+wrenv_path = "C:\WindRiver\wrenv.EXE"
+args = [wrenv_path, '-p', 'vxworks-6.4']
+proc = subprocess.Popen(args,
+shell=True,
+stdin=subprocess.PIPE,
+stdout=subprocess.PIPE
+)
+proc.stdin.write(str.encode('wrws_update -data %s -l %s -b clean\n' %
+(workspace, self.target)))
+output, error = proc.communicate()
+print(output)
+print(error)
+
+You can keep using stdin.write until you call communicate() this allows
+you to write certain commands to the stdin for the process you launched.
+Note: wrenv.exe is actually a shell like cmd.exe.
+
+The above code is written for Python 3.1.
+
+Thanks for the help.
